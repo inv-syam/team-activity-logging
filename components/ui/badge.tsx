@@ -26,11 +26,25 @@ const badgeVariants = cva(
 export interface BadgeProps
   extends
     React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  color?: string
+}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, variant, color, style, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div 
+      className={cn(badgeVariants({ variant }), className)} 
+      style={{ 
+        ...style, 
+        ...(color && { 
+          backgroundColor: `${color}1A`, // 10% opacity for subtle background
+          borderColor: `${color}40`, // 25% opacity for border
+          color: color, // Text in full color
+          boxShadow: `0 0 0 1px ${color}15, 0 1px 2px ${color}10`, // Subtle glow
+        }) 
+      }}
+      {...props} 
+    />
   )
 }
 

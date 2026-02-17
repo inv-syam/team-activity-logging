@@ -127,6 +127,8 @@ export function Dashboard({ activities, members, activityTypes, onSelectDay, onO
               key={type.id}
               variant={selectedType === type.id ? 'default' : 'outline'}
               className="cursor-pointer"
+              style={{ backgroundColor: getActivityTypeColor(type.id) }}
+              color={getActivityTypeColor(type.id)}
               onClick={() => setSelectedType(selectedType === type.id ? null : type.id)}
             >
               {type.icon} {type.name}
@@ -203,12 +205,12 @@ export function Dashboard({ activities, members, activityTypes, onSelectDay, onO
                             style={{ backgroundColor: getActivityTypeColor(activity.activityType) }}
                             title={activity.description}
                           >
-                            {isCompleted ? (
-                              <Check className="w-3 h-3 shrink-0" />
-                            ) : (
-                              <Clock className="w-3 h-3 shrink-0" />
-                            )}
-                            <span className="truncate">{getMemberName(activity.memberId)}</span>
+                                                {isCompleted ? (
+                        <Check className="w-3 h-3 shrink-0" style={{strokeWidth: 3}} />
+                      ) : (
+                        <Clock className="w-3 h-3 shrink-0" style={{strokeWidth: 3}} />
+                      )}
+                            <span className="truncate font-bold">{getMemberName(activity.memberId)}</span>
                           </div>
                           )
                         })}
