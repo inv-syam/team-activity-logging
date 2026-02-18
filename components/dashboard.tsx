@@ -5,12 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, Filter, Check, Clock } from 'lucide-react'
+import { PendingTasksDialog } from '@/components/ui/pending-tasks-dialog'
 
 export function Dashboard({ activities, members, activityTypes, onSelectDay, onOpenForm }: any) {
   const [currentDate, setCurrentDate] = useState(new Date(2026, 1, 11))
   const [selectedMember, setSelectedMember] = useState<string | null>(null)
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
+  const [showPendingTasks, setShowPendingTasks] = useState(false)
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()
   const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()
@@ -144,7 +146,14 @@ export function Dashboard({ activities, members, activityTypes, onSelectDay, onO
               <CardTitle className="text-xl">{monthName}</CardTitle>
               <CardDescription>Activity calendar — click a day to add or view activities</CardDescription>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
+              <Button
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={() => setShowPendingTasks(true)}
+              >
+                <Clock className="w-4 h-4 mr-2" />
+                Pending Tasks
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -173,14 +182,14 @@ export function Dashboard({ activities, members, activityTypes, onSelectDay, onO
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-7 gap-2 sm:gap-3 items-start">
+            <div className="grid grid-cols-7 gap-2 sm:gap-3 items-stretch">
               {calendarDays.map((day, index) => {
                 const activityCount = day !== null ? (activitiesByDate[day] || []).length : 0
                 return (
                   <div
                     key={index}
                     onClick={() => day !== null && handleDayClick(day)}
-                    className={`rounded-lg border border-border p-2 sm:p-3 flex flex-col h-[10rem] cursor-pointer transition-all ${
+                    className={`rounded-lg border border-border p-2 sm:p-3 flex flex-col min-h-[8rem] cursor-pointer transition-all ${
                       day !== null
                         ? selectedDay === day
                           ? 'bg-primary/20 border-primary'
@@ -191,10 +200,7 @@ export function Dashboard({ activities, members, activityTypes, onSelectDay, onO
                     {day !== null ? (
                       <>
                         <div className="text-sm sm:text-base font-medium text-foreground mb-1 sm:mb-2 shrink-0 text-center">{day}</div>
-                        <div
-                          className="flex-1 space-y-1 min-h-0 overflow-y-auto scrollbar-hide"
-                          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                        >
+                        <div className="flex-1 space-y-1">
                           {(activitiesByDate[day] || []).map((activity: any) => {
                             const isCompleted = (activity.status || 'completed') === 'completed'
                             return (
@@ -223,6 +229,14 @@ export function Dashboard({ activities, members, activityTypes, onSelectDay, onO
           </div>
         </CardContent>
       </Card>
+
+      <PendingTasksDialog
+        open={showPendingTasks}
+        onOpenChange={setShowPendingTasks}
+        activities={activities}
+        members={members}
+        currentDate={currentDate}
+      />
     </div>
   )
 }
