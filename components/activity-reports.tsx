@@ -74,7 +74,7 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
     const employeeParam = selectedEmployee ? selectedEmployee : ""
   
     window.open(
-      `/api/export?sheetId=${process.env.NEXT_PUBLIC_SHEET_ID}&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`,
+      `/api/export-ppt?sheetId=${process.env.NEXT_PUBLIC_SHEET_ID}&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`,
       "_blank"
     )
   
