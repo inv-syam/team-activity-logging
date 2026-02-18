@@ -10,6 +10,12 @@ import { Download } from 'lucide-react'
 export function ActivityReports({ activities, members, activityTypes }: any) {
   const [period, setPeriod] = useState('month')
 
+  const [showExportPopup, setShowExportPopup] = useState(false)
+  const [selectedEmployee, setSelectedEmployee] = useState("")
+  const [fromDate, setFromDate] = useState("")
+  const [toDate, setToDate] = useState("")
+  const [reportType, setReportType] = useState("all")
+
   // Calculate total hours by member
   const hoursByMember = members.map((member: any) => {
     const totalMinutes = activities
@@ -50,6 +56,26 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
     }
   }).reverse()
 
+  const generateEmployeeReport = () => {
+    if (!fromDate || !toDate) {
+      alert("Please select date range")
+      return
+    }
+
+    const employeeParam = selectedEmployee ? selectedEmployee : ""
+  
+    window.open(
+      `${process.env.NEXT_PUBLIC_EXPORT_URL}?action=exportReport&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`,
+      "_blank"
+    )
+  
+    // Close popup after export
+    setShowExportPopup(false)
+    setSelectedEmployee("")
+    setFromDate("")
+    setToDate("")
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -57,7 +83,7 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
           <h2 className="text-2xl font-bold text-foreground">Activity Reports</h2>
           <p className="text-sm text-muted-foreground">Analytics and insights on team activities</p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => setShowExportPopup(true)}>
           <Download className="w-4 h-4 mr-2" />
           Export Report
         </Button>
@@ -205,6 +231,109 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
           </div>
         </CardContent>
       </Card>
+      {showExportPopup && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+
+        <div className="bg-card w-full max-w-lg rounded-2xl shadow-xl p-6 space-y-6">
+
+          {/* Title */}
+          <div>
+            <h3 className="text-xl font-bold text-foreground">
+              Export Activity Report
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Select employee and date range to export report.
+            </p>
+          </div>
+
+          {/* Employee Dropdown */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">
+              Select Employee
+            </label>
+
+            <select
+              value={selectedEmployee}
+              onChange={(e) => setSelectedEmployee(e.target.value)}
+              className="w-full border border-border rounded-lg p-2 bg-background text-foreground"
+            >
+              <option value="">All Employees</option>
+
+              {members.map((member: any) => (
+                <option key={member.id} value={member.name}>
+                  {member.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Date Range */}
+          <div className="grid grid-cols-2 gap-4">
+
+            {/* From Date */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">
+                From Date
+              </label>
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className="w-full border border-border rounded-lg p-2 bg-background text-foreground"
+              />
+            </div>
+
+            {/* To Date */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">
+                To Date
+              </label>
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="w-full border border-border rounded-lg p-2 bg-background text-foreground"
+              />
+            </div>
+
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">
+              Report Type
+            </label>
+
+            <select
+              value={reportType}
+              onChange={(e) => setReportType(e.target.value)}
+              className="w-full border border-border rounded-lg p-2 bg-background text-foreground"
+            >
+              <option value="all">All Activities</option>
+              <option value="week">Work Done This Week</option>
+              <option value="pending">Pending Activities</option>
+            </select>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-3 pt-4">
+
+            <Button
+              variant="outline"
+              onClick={() => setShowExportPopup(false)}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              className="bg-primary text-primary-foreground"
+              onClick={generateEmployeeReport}
+            >
+              Export Report
+            </Button>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   )
 }
