@@ -1,13 +1,16 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect,useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LinkifiedText } from '@/components/linkified-text'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { X } from 'lucide-react'
+import { X,Filter } from 'lucide-react'
 
 export function DayDetails({ day, date, activities, members, activityTypes, onClose, onAddActivity }: any) {
+  const [selectedMember, setSelectedMember] = useState<string | null>(null)
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
+
   const formatDate = (date: Date) => {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     return `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
@@ -41,11 +44,16 @@ export function DayDetails({ day, date, activities, members, activityTypes, onCl
   const dayActivities = activities.filter((activity: any) => {
     const actDate = new Date(activity.date)
     const selectedDate = new Date(date)
-    return (
+
+    const sameDate =
       actDate.getDate() === selectedDate.getDate() &&
       actDate.getMonth() === selectedDate.getMonth() &&
       actDate.getFullYear() === selectedDate.getFullYear()
-    )
+
+    const matchesMember = !selectedMember || activity.memberId === selectedMember
+    const matchesStatus = !selectedStatus || activity.status === selectedStatus
+
+    return sameDate && matchesMember && matchesStatus
   })
 
   const totalDuration = dayActivities.reduce((sum: number, activity: any) => sum + activity.duration, 0)
@@ -73,6 +81,61 @@ export function DayDetails({ day, date, activities, members, activityTypes, onCl
             <X className="w-5 h-5" />
           </button>
         </div>
+        <div className="flex items-center gap-2 pt-4 pl-6">
+          <Filter className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Filter by:</span>
+          <div className="flex gap-2 flex-wrap">
+            <Badge
+              variant={!selectedMember ? 'default' : 'outline'}
+              className="cursor-pointer"
+              onClick={() => setSelectedMember(null)}
+            >
+              All Members
+            </Badge>
+            {members.map((member: any) => (
+              <Badge
+                key={member.id}
+                variant={selectedMember === member.id ? 'default' : 'outline'}
+                className="cursor-pointer"
+                onClick={() => setSelectedMember(selectedMember === member.id ? null : member.id)}
+              >
+                {member.name}
+              </Badge>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 mt-3  pt-4 pl-6">
+          <span className="text-sm text-muted-foreground">Status:</span>
+
+          <Badge
+            variant={!selectedStatus ? 'default' : 'outline'}
+            className="cursor-pointer"
+            onClick={() => setSelectedStatus(null)}
+          >
+            All
+          </Badge>
+
+          <Badge
+            variant={selectedStatus === 'pending' ? 'default' : 'outline'}
+            className="cursor-pointer"
+            onClick={() =>
+              setSelectedStatus(selectedStatus === 'pending' ? null : 'pending')
+            }
+          >
+            Pending
+          </Badge>
+
+          <Badge
+            variant={selectedStatus === 'completed' ? 'default' : 'outline'}
+            className="cursor-pointer"
+            onClick={() =>
+              setSelectedStatus(selectedStatus === 'completed' ? null : 'completed')
+            }
+          >
+            Completed
+          </Badge>
+        </div>
+
 
         <CardContent className="p-6 space-y-6 overflow-y-auto min-h-0 flex-1">
           {dayActivities.length > 0 ? (

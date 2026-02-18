@@ -177,48 +177,48 @@ export function Dashboard({ activities, members, activityTypes, onSelectDay, onO
               {calendarDays.map((day, index) => {
                 const activityCount = day !== null ? (activitiesByDate[day] || []).length : 0
                 return (
-                <div
-                  key={index}
-                  onClick={() => day !== null && handleDayClick(day)}
-                  className={`rounded-lg border border-border p-2 sm:p-3 flex flex-col min-h-[6rem] cursor-pointer transition-all ${
-                    activityCount > 3 ? 'min-h-[8rem]' : ''
-                  } ${activityCount > 6 ? 'min-h-[11rem]' : ''} ${
-                    activityCount > 10 ? 'min-h-[14rem]' : ''
-                  } ${day !== null
-                      ? selectedDay === day
-                        ? 'bg-primary/20 border-primary'
-                        : 'bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50'
-                      : ''
-                  }`}
-                  style={activityCount > 15 ? { minHeight: `${6 + activityCount * 1.75}rem` } : undefined}
-                >
-                  {day !== null ? (
-                    <>
-                      <div className="text-sm sm:text-base font-medium text-foreground mb-1 sm:mb-2 shrink-0">{day}</div>
-                      <div className="flex-1 space-y-1 min-h-0">
-                        {(activitiesByDate[day] || []).map((activity: any) => {
-                          const isCompleted = (activity.status || 'completed') === 'completed'
-                          return (
-                          <div
-                            key={activity.id}
-                            className="text-[10px] sm:text-xs py-0.5 sm:py-1 px-1.5 sm:px-2 rounded truncate text-white leading-tight flex items-center gap-1"
-                            style={{ backgroundColor: getActivityTypeColor(activity.activityType) }}
-                            title={activity.description}
-                          >
-                                                {isCompleted ? (
-                        <Check className="w-3 h-3 shrink-0" style={{strokeWidth: 3}} />
-                      ) : (
-                        <Clock className="w-3 h-3 shrink-0" style={{strokeWidth: 3}} />
-                      )}
-                            <span className="truncate font-bold">{getMemberName(activity.memberId)}</span>
-                          </div>
-                          )
-                        })}
-                      </div>
-                    </>
-                  ) : null}
-                </div>
-              )})}
+                  <div
+                    key={index}
+                    onClick={() => day !== null && handleDayClick(day)}
+                    className={`rounded-lg border border-border p-2 sm:p-3 flex flex-col h-[10rem] cursor-pointer transition-all ${
+                      day !== null
+                        ? selectedDay === day
+                          ? 'bg-primary/20 border-primary'
+                          : 'bg-secondary/30 hover:bg-secondary/50 hover:border-primary/50'
+                        : ''
+                    }`}
+                  >
+                    {day !== null ? (
+                      <>
+                        <div className="text-sm sm:text-base font-medium text-foreground mb-1 sm:mb-2 shrink-0 text-center">{day}</div>
+                        <div
+                          className="flex-1 space-y-1 min-h-0 overflow-y-auto scrollbar-hide"
+                          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        >
+                          {(activitiesByDate[day] || []).map((activity: any) => {
+                            const isCompleted = (activity.status || 'completed') === 'completed'
+                            return (
+                              <div
+                                key={activity.id}
+                                className="text-[10px] sm:text-xs py-0.5 sm:py-1 px-1.5 sm:px-2 rounded truncate text-white leading-tight flex items-center gap-1"
+                                style={{ backgroundColor: getActivityTypeColor(activity.activityType) }}
+                                title={activity.description}
+                              >
+                                {isCompleted ? (
+                                  <Check className="w-3 h-3 shrink-0" style={{ strokeWidth: 3 }} />
+                                ) : (
+                                  <Clock className="w-3 h-3 shrink-0" style={{ strokeWidth: 3 }} />
+                                )}
+                                <span className="truncate font-bold">{getMemberName(activity.memberId)}</span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </CardContent>
