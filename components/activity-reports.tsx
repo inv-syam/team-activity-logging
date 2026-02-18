@@ -74,7 +74,7 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
     const employeeParam = selectedEmployee ? selectedEmployee : ""
   
     window.open(
-      `${process.env.NEXT_PUBLIC_EXPORT_URL}?action=exportReport&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`,
+      `/api/export?sheetId=${process.env.NEXT_PUBLIC_SHEET_ID}&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`,
       "_blank"
     )
   
