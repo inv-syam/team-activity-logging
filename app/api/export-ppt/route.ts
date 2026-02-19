@@ -108,15 +108,15 @@ export async function GET(req: Request) {
     });
 
     // Details Section
-    slide1.addText(
-      [
-        { text: `Employee: `, bold: true },
-        { text: employee + "\n" },
-        { text: `From: `, bold: true },
-        { text: `${from}   To: ${to}\n` },
-        { text: `Report Type: `, bold: true },
-        { text: type.toUpperCase() },
-      ],
+      slide1.addText(
+        [
+          { text: `Employee: `, options: { bold: true } },
+          { text: employee + "\n" },
+          { text: `From: `, options: { bold: true } },
+          { text: `${from}   To: ${to}\n` },
+          { text: `Report Type: `, options: { bold: true } },
+          { text: type.toUpperCase() },
+        ],
       {
         x: 1,
         y: 2.8,
@@ -267,7 +267,7 @@ export async function GET(req: Request) {
       ["Name", "Date", "Type", "Description", "Duration", "Status", "Blocker"],
     ];
 
-    filtered.slice(0, 8).forEach((row) => {
+    filtered.forEach((row) => {
       tableData.push([
         row[2],
         row[5],

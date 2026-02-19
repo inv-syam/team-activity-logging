@@ -74,7 +74,7 @@ export async function GET(req: Request) {
     const logoBase64 = `data:image/png;base64,${imageBuffer.toString("base64")}`
 
     // === Table Data
-    const tableBody = filtered.slice(0, 15).map((row) => [
+    const tableBody = filtered.map((row) => [
        row[2], // Name
       row[5], // Date
       row[3], // Type
