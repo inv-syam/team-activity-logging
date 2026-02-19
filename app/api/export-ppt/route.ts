@@ -84,202 +84,175 @@ export async function GET(req: Request) {
 
     const slide1 = pptx.addSlide();
 
-    slide1.addText("Activity Report", {
+    // Background color
+    slide1.background = { fill: "F8FAFC" };
+
+    // Big Title
+    slide1.addText("ACTIVITY REPORT", {
       x: 1,
-      y: 1,
-      w: 10,
+      y: 1.2,
+      w: 11,
       h: 1,
-      fontFace: "Calibri",
-      fontSize: 44,
+      fontSize: 48,
       bold: true,
-      color: "000000",
+      color: "1E293B",
     });
 
-    slide1.addText(`Employee: ${employee}`, {
+    // Accent Line
+    slide1.addShape(pptx.ShapeType.rect, {
       x: 1,
-      y: 2.3,
-      w: 10,
-      h: 0.5,
-      fontFace: "Calibri",
-      fontSize: 22,
-      color: "333333",
+      y: 2.1,
+      w: 3,
+      h: 0.15,
+      fill: { color: "3B82F6" },
     });
 
-    slide1.addText(`From: ${from}   To: ${to}`, {
-      x: 1,
-      y: 3,
-      w: 10,
-      h: 0.5,
-      fontFace: "Calibri",
-      fontSize: 20,
-      color: "333333",
-    });
-
-    slide1.addText(`Report Type: ${type.toUpperCase()}`, {
-      x: 1,
-      y: 3.7,
-      w: 10,
-      h: 0.5,
-      fontFace: "Calibri",
-      fontSize: 20,
-      color: "333333",
-    });
-
-    slide1.addText(`Total Hours Worked: ${totalHours} min`, {
-        x: 1,
-        y: 4.5,
-        w: 10,      // Increase width
-        h: 0.7,     // Increase height
-        fontSize: 20,
-        color: "0000FF",
-        bold: true,
-      });
-      
-      slide1.addText(`Average Duration: ${avgDuration} min/task`, {
-        x: 1,
-        y: 5.3,
-        w: 10,      // Increase width
-        h: 0.7,     // Increase height
-        fontSize: 20,
-        color: "0000FF",
-        bold: true,
-      });
-
-    const slideHighlights = pptx.addSlide();
-
-    slideHighlights.addText("Report Highlights", {
-        x: 1,
-        y: 0.7,
-        w: 12,
-        h: 0.8,
-        fontFace: "Calibri",
-        fontSize: 36,
-        bold: true,
-        color: "000000",
-    });
-
-    slideHighlights.addText(
-        `📌 Total Tasks Logged: ${total}\n\n✅ Completed Tasks: ${completed}\n\n⏳ Pending Tasks: ${pending}\n\n🚨 Blockers Reported: ${blockers}`,
-        {
-            x: 1,
-            y: 2,
-            w: 11,
-            h: 4,
-            fontFace: "Calibri",
-            fontSize: 24,
-            color: "333333",
-            lineSpacingMultiple: 1.4,
-        }
-    );
-
-    slideHighlights.addChart(
-        pptx.ChartType.bar,
-        [
-          {
-            name: "Task Count",
-            labels: ["Completed", "Pending", "Blockers"],
-            values: [completed, pending, blockers],
-          },
-        ],
-        {
-          x: 6.5,
-          y: 1.8,
-          w: 6,
-          h: 4,
-      
-          showLegend: false,
-      
-          dataLabelPosition: "outEnd",
-          dataLabelFormatCode: "0",
-      
-          chartColors: ["00A65A", "FF9900", "FF0000"], // green, orange, red
-        }
-      );
-      
-      // Footer Note
-      slideHighlights.addText("Generated Automatically from Google Sheets", {
-        x: 1,
-        y: 6.9,
-        w: 11,
-        h: 0.4,
-        fontSize: 14,
-        italic: true,
-        color: "666666",
-      });
-
-    const slide2 = pptx.addSlide();
-
-    slide2.addText("Summary Overview", {
-        x: 1,
-        y: 0.5,
-        w: 10,
-        h: 0.8,
-        fontFace: "Calibri",
-        fontSize: 34,
-        bold: true,
-        color: "000000",
-    });
-
-    slide2.addText(`Total Activities: ${total}`, {
-        x: 1,
-        y: 1.5,
-        w: 6,
-        h: 0.5,
-        fontSize: 20,
-    });
-
-    slide2.addText(`Completed: ${completed}`, {
-        x: 1,
-        y: 2.2,
-        w: 6,
-        h: 0.5,
-        fontSize: 18,
-        color: "008000",
-    });
-
-    slide2.addText(`Pending: ${pending}`, {
+    // Details Section
+    slide1.addText(
+      [
+        { text: `Employee: `, bold: true },
+        { text: employee + "\n" },
+        { text: `From: `, bold: true },
+        { text: `${from}   To: ${to}\n` },
+        { text: `Report Type: `, bold: true },
+        { text: type.toUpperCase() },
+      ],
+      {
         x: 1,
         y: 2.8,
-        w: 6,
-        h: 0.5,
-        fontSize: 18,
-        color: "FF8C00",
+        w: 10,
+        h: 2,
+        fontSize: 22,
+        color: "334155",
+        lineSpacingMultiple: 1.3,
+      }
+    );
+
+
+    const slideHighlights = pptx.addSlide();
+    slideHighlights.background = { fill: "FFFFFF" };
+
+    slideHighlights.addText("Dashboard Overview", {
+      x: 1,
+      y: 0.5,
+      w: 10,
+      h: 0.8,
+      fontSize: 36,
+      bold: true,
+      color: "1E293B",
     });
 
-    slide2.addText(`Blockers: ${blockers}`, {
-        x: 1,
-        y: 3.4,
-        w: 6,
+    // KPI Card Function
+    const addCard = (
+      slide: any,
+      x: number,
+      title: string,
+      value: number,
+      color: string
+    ) => {
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x,
+        y: 1.6,
+        w: 2,
+        h: 2,
+        fill: { color },
+        line: { color },
+        rectRadius: 0.2,
+      });
+
+      slide.addText(value.toString(), {
+        x,
+        y: 1.9,
+        w: 2,
+        h: 1,
+        align: "center",
+        fontSize: 40,
+        bold: true,
+        color: "FFFFFF",
+      });
+
+      slide.addText(title, {
+        x,
+        y: 2.8,
+        w: 2,
         h: 0.5,
-        fontSize: 18,
-        color: "FF0000",
+        align: "center",
+        fontSize: 16,
+        color: "FFFFFF",
+      });
+    };
+
+    addCard(slideHighlights, 1, "Total Tasks", total, "3B82F6");
+    addCard(slideHighlights, 3.5, "Completed", completed, "10B981");
+    addCard(slideHighlights, 6, "Pending", pending, "F59E0B");
+    addCard(slideHighlights, 8.5, "Blockers", blockers, "EF4444");
+    slideHighlights.addChart(
+      pptx.ChartType.bar,
+      [
+        {
+          name: "Tasks",
+          labels: ["Completed", "Pending", "Blockers"],
+          values: [completed, pending, blockers],
+        },
+      ],
+      {
+        x: 2,
+        y: 4.2,
+        w: 10,
+        h: 3.5,
+        showLegend: false,
+        chartColors: ["10B981", "F59E0B", "EF4444"],
+        dataLabelPosition: "outEnd",
+        dataLabelFontSize: 12,
+      }
+    );
+
+    const slide2 = pptx.addSlide();
+    slide2.background = { fill: "F8FAFC" };
+
+    slide2.addText("Summary Overview", {
+      x: 1,
+      y: 0.6,
+      fontSize: 34,
+      bold: true,
+      color: "1E293B",
     });
+
+    slide2.addText(
+      `Total Hours Worked: ${totalHours} min\n\nAverage Duration: ${avgDuration} min/task`,
+      {
+        x: 1,
+        y: 1.6,
+        w: 5,
+        h: 3,
+        fontSize: 22,
+        color: "334155",
+        lineSpacingMultiple: 1.4,
+      }
+    );
 
     slide2.addChart(
-        pptx.ChartType.pie,
-        [
-          {
-            name: "Tasks",
-            labels: ["Completed", "Pending"],
-            values: [completed, pending],
-          },
-        ],
+      pptx.ChartType.pie,
+      [
         {
-          x: 6.5,
-          y: 1.3,
-          w: 6.5,
-          h: 4.5,
-      
-          showLegend: true,
-          legendPos: "r",
-      
-          dataLabelPosition: "bestFit",
-          dataLabelFormatCode: "0",
-        }
+          name: "Tasks",
+          labels: ["Completed", "Pending"],
+          values: [completed, pending],
+        },
+      ],
+      {
+        x: 6,
+        y: 1.2,
+        w: 6,
+        h: 4.5,
+        showLegend: true,
+        legendPos: "r",
+        chartColors: ["10B981", "F59E0B"],
+        dataLabelPosition: "bestFit",
+      }
     );
 
     const slide3 = pptx.addSlide();
-
     slide3.addText("Recent Activities", {
       x: 1,
       y: 0.6,
@@ -290,7 +263,6 @@ export async function GET(req: Request) {
       bold: true,
       color: "000000",
     });
-
     const tableData: any[] = [
       ["Name", "Date", "Type", "Description", "Duration", "Status", "Blocker"],
     ];
@@ -307,14 +279,19 @@ export async function GET(req: Request) {
       ]);
     });
 
+    slide3.background = { fill: "FFFFFF" };
+
     slide3.addTable(tableData, {
       x: 0.5,
       y: 1.5,
-      w: 13.2,
-      fontFace: "Calibri",
+      w: 12,
       fontSize: 12,
-      border: { type: "solid", color: "999999" },
+      border: { type: "solid", color: "E2E8F0" },
+      fill: { color: "FFFFFF" },
+      color: "334155",
+      autoPage: true,
     });
+
 
     const pptBuffer = (await pptx.write({
       outputType: "nodebuffer",
