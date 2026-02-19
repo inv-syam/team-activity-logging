@@ -65,18 +65,29 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
     }
   }).reverse()
 
-  const generateEmployeeReport = () => {
+  const generateEmployeeReport = (format: "csv" | "ppt" | "pdf") => {
     if (!fromDate || !toDate) {
       alert("Please select date range")
       return
     }
 
-    const employeeParam = selectedEmployee ? selectedEmployee : ""
+    const employeeParam = selectedEmployee ? selectedEmployee : "";
+
+    let url = "";
   
-    window.open(
-      `/api/export?sheetId=${process.env.NEXT_PUBLIC_SHEET_ID}&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`,
-      "_blank"
-    )
+    switch (format) {
+      case "csv":
+        url = `/api/export?sheetId=${process.env.NEXT_PUBLIC_SHEET_ID}&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`
+        break
+      case "ppt":
+        url = `/api/export-ppt?sheetId=${process.env.NEXT_PUBLIC_SHEET_ID}&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`
+        break
+      case "pdf":
+        url = `/api/export-pdf?sheetId=${process.env.NEXT_PUBLIC_SHEET_ID}&employee=${employeeParam}&from=${fromDate}&to=${toDate}&type=${reportType}`
+        break
+    }
+  
+    window.open(url, "_blank");
   
     // Close popup after export
     setShowExportPopup(false)
@@ -301,7 +312,7 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
       {showExportPopup && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
 
-        <div className="bg-card w-full max-w-lg rounded-2xl shadow-xl p-6 space-y-6">
+        <div className="bg-card w-full max-w-2xl rounded-2xl shadow-xl p-8 space-y-6">
 
           {/* Title */}
           <div>
@@ -393,10 +404,24 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
             </Button>
 
             <Button
-              className="bg-primary text-primary-foreground"
-              onClick={generateEmployeeReport}
+              className="bg-green-600 text-white hover:bg-green-700"
+              onClick={() => generateEmployeeReport("csv")}
             >
-              Export Report
+              Download CSV
+            </Button>
+
+            <Button
+              className="bg-blue-600 text-white hover:bg-blue-700"
+              onClick={() => generateEmployeeReport("ppt")}
+            >
+              Download PPT
+            </Button>
+
+            <Button
+              className="bg-red-600 text-white hover:bg-red-700"
+              onClick={() => generateEmployeeReport("pdf")}
+            >
+              Download PDF
             </Button>
           </div>
         </div>
