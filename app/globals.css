@@ -26,7 +26,7 @@ body {
     --primary: 210 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 30% 90%;
+    --secondary: 222 60% 90%;
     --secondary-foreground: 222 47% 11%;
 
     --muted: 210 20% 98%;
@@ -41,7 +41,7 @@ body {
     --destructive-foreground: 0 0% 98%;
 
     --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --input: 214 62% 91%;
     --ring: 210 100% 50%;
 
     --radius: 0.5rem;

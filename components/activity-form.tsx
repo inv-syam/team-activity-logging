@@ -72,7 +72,7 @@ export function ActivityForm({ members, activityTypes, onSubmit, onClose, initia
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="bg-card border-border w-full max-w-2xl">
+      <Card className=" border-border w-full max-w-2xl">
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-xl font-bold text-foreground">Log New Activity</h2>
           <button
@@ -149,7 +149,7 @@ export function ActivityForm({ members, activityTypes, onSubmit, onClose, initia
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-secondary/30">
+          <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-secondary/80">
             <div className="space-y-0.5">
               <Label className="text-foreground">Status</Label>
               <p className="text-sm text-muted-foreground">
