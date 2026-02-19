@@ -68,7 +68,7 @@ export function DayDetails({ day, date, activities, members, activityTypes, onCl
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4 overflow-y-auto">
-      <Card className="bg-card border-border w-full max-w-2xl max-h-[90vh] flex flex-col">
+      <Card className=" border-border w-full max-w-2xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-border shrink-0">
           <div>
             <h2 className="text-xl font-bold text-foreground">Activities for {formatDate(date)}</h2>
