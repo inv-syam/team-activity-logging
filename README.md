@@ -75,7 +75,7 @@ A modern full-stack platform to log daily team activities, track blockers, manag
 ## 📂 Project Structure
 
 ```
-/home/runner/work/team-activity-logging/team-activity-logging/
+team-activity-logging/
 ├── app/
 │   ├── api/
 │   │   ├── activities/route.ts      → Activities CRUD API
@@ -182,7 +182,8 @@ Open the downloaded JSON file and copy:
 #### Step 2: Share with Service Account
 1. Click **Share** button
 2. Paste the service account email (from `client_email`)
-3. Grant **Editor** access
+3. Grant **Editor** access (required for adding activities, members, and activity types)
+   > ⚠️ **Note**: Editor access is necessary because the application creates sheets and appends data. For read-only operations, Viewer access would suffice.
 4. Uncheck "Notify people"
 5. Click **Share**
 
