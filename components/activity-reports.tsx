@@ -105,7 +105,27 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
           <h2 className="text-2xl font-bold text-foreground">Activity Reports</h2>
           <p className="text-sm text-muted-foreground">Analytics and insights on team activities</p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => setShowExportPopup(true)}>
+        <Button
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          onClick={() => {
+            const now = new Date()
+
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+
+            const formatLocalDate = (date: Date) => {
+              const year = date.getFullYear()
+              const month = String(date.getMonth() + 1).padStart(2, "0")
+              const day = String(date.getDate()).padStart(2, "0")
+              return `${year}-${month}-${day}`
+            }
+
+            setFromDate(formatLocalDate(firstDay))
+            setToDate(formatLocalDate(lastDay))
+
+            setShowExportPopup(true)
+          }}
+        >
           <Download className="w-4 h-4 mr-2" />
           Export Report
         </Button>
