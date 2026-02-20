@@ -35,6 +35,97 @@ export async function GET(req: Request) {
     start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
 
+
+    const applyCoverLayout = (slide: any) => {
+      const slideWidth = 13.33;
+
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0,
+        y: 0,
+        w: slideWidth,
+        h: 1.2,
+        fill: { color: "1E3A8A" }, // dark blue
+      });
+
+      // Accent strip
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0,
+        y: 1.2 - 0.15,
+        w: slideWidth,
+        h: 0.15,
+        fill: { color: "3B82F6" },
+      });
+
+      // Website (Top Right)
+      slide.addImage({
+        path: "public/logo.png",
+        x: 0.5,
+        y: 0.15,
+        w: 2.2  ,
+        h: 0.8,
+      });
+
+      // Bottom Bar
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0,
+        y: 7.2,
+        w: slideWidth,
+        h: 0.4,
+        fill: { color: "3B82F6" },
+      });
+    };
+
+    const applyHeaderLayout = (slide: any, heading: string) => {
+
+      const slideWidth = 13.33;
+      // Blue Header
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0,
+        y: 0,
+        w: slideWidth,
+        h: 1.2,
+        fill: { color: "1E3A8A" }, // dark blue
+      });
+
+      // Accent strip
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0,
+        y: 1.2 - 0.15,
+        w: slideWidth,
+        h: 0.15,
+        fill: { color: "3B82F6" },
+      });
+
+      // Heading in Header
+      slide.addText(heading, {
+        x: 0.7,
+        y: 0.35,
+        fontSize: 26,
+        bold: true,
+        color: "FFFFFF",
+      });
+
+      // Website Right
+      slide.addText("www.innovaturelabs.com", {
+        x: slideWidth - 4,
+        y: 0.4,
+        w: 3.5,
+        align: "right",
+        fontSize: 12,
+        color: "FFFFFF",
+      });
+
+      // Bottom Bar
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0,
+        y: 7.2,
+        w: slideWidth,
+        h: 0.3,
+        fill: { color: "3B82F6" },
+      });
+
+    };
+
     const filtered = data.filter((row) => {
       const name = row[2];
       const status = row[7];
@@ -83,6 +174,8 @@ export async function GET(req: Request) {
     };
 
     const slide1 = pptx.addSlide();
+    applyCoverLayout(slide1);
+  
 
     // Background color
     slide1.background = { fill: "F8FAFC" };
@@ -130,17 +223,10 @@ export async function GET(req: Request) {
 
 
     const slideHighlights = pptx.addSlide();
+    applyHeaderLayout(slideHighlights, "Dashboard Overview");
+
     slideHighlights.background = { fill: "FFFFFF" };
 
-    slideHighlights.addText("Dashboard Overview", {
-      x: 1,
-      y: 0.5,
-      w: 10,
-      h: 0.8,
-      fontSize: 36,
-      bold: true,
-      color: "1E293B",
-    });
 
     // KPI Card Function
     const addCard = (
@@ -187,7 +273,7 @@ export async function GET(req: Request) {
     addCard(slideHighlights, 6, "Pending", pending, "F59E0B");
     addCard(slideHighlights, 8.5, "Blockers", blockers, "EF4444");
     slideHighlights.addChart(
-      pptx.ChartType.bar,
+      pptx.ChartType.line,
       [
         {
           name: "Tasks",
@@ -199,7 +285,7 @@ export async function GET(req: Request) {
         x: 2,
         y: 4.2,
         w: 10,
-        h: 3.5,
+        h: 3,
         showLegend: false,
         chartColors: ["10B981", "F59E0B", "EF4444"],
         dataLabelPosition: "outEnd",
@@ -208,15 +294,9 @@ export async function GET(req: Request) {
     );
 
     const slide2 = pptx.addSlide();
+    applyHeaderLayout(slide2, "Summary Overview");
     slide2.background = { fill: "F8FAFC" };
 
-    slide2.addText("Summary Overview", {
-      x: 1,
-      y: 0.6,
-      fontSize: 34,
-      bold: true,
-      color: "1E293B",
-    });
 
     slide2.addText(
       `Total Hours Worked: ${totalHours} min\n\nAverage Duration: ${avgDuration} min/task`,
@@ -253,16 +333,8 @@ export async function GET(req: Request) {
     );
 
     const slide3 = pptx.addSlide();
-    slide3.addText("Recent Activities", {
-      x: 1,
-      y: 0.6,
-      w: 10,
-      h: 0.8,
-      fontFace: "Calibri",
-      fontSize: 30,
-      bold: true,
-      color: "000000",
-    });
+    applyHeaderLayout(slide3, "Recent Activities");
+    
     const tableData: any[] = [
       ["Name", "Date", "Type", "Description", "Duration", "Status", "Blocker"],
     ];
