@@ -269,31 +269,6 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
 
       <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle>Member Activity Summary</CardTitle>
-          <CardDescription>Detailed breakdown by team member</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {hoursByMember.map((member: any) => (
-              <div key={member.name} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                <div className="flex-1">
-                  <h4 className="font-semibold text-foreground">{member.name}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {activities.filter((a: any) => a.memberName === member.name).length} activities · {member.minutes} minutes total
-                  </p>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-primary">{member.hours}</div>
-                  <p className="text-sm text-muted-foreground">hours</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-card border-border">
-        <CardHeader>
           <CardTitle>🚨 Current Blockers</CardTitle>
           <CardDescription>
             Activities that are blocked and need attention
@@ -337,6 +312,32 @@ export function ActivityReports({ activities, members, activityTypes }: any) {
           )}
         </CardContent>
       </Card>
+
+      <Card className="bg-card border-border">
+        <CardHeader>
+          <CardTitle>Member Activity Summary</CardTitle>
+          <CardDescription>Detailed breakdown by team member</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {hoursByMember.map((member: any) => (
+              <div key={member.name} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                <div className="flex-1">
+                  <h4 className="font-semibold text-foreground">{member.name}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {activities.filter((a: any) => a.memberName === member.name).length} activities · {member.minutes} minutes total
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-primary">{member.hours}</div>
+                  <p className="text-sm text-muted-foreground">hours</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Export Popup */}
       {showExportPopup && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
