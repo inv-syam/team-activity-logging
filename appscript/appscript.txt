@@ -172,3 +172,138 @@ function createMonthlyTrigger() {
 
   Logger.log("✅ Monthly trigger created successfully!");
 }
+
+function checkMembersActivity() {
+  const ADMIN_EMAIL = "syam.sg@innovaturelabs.com";
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const membersSheet = ss.getSheetByName("Members");
+  const activitySheet = ss.getSheetByName("Activities");
+
+  const membersData = membersSheet.getDataRange().getValues();
+  const activityData = activitySheet.getDataRange().getValues();
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const activeToday = new Set();
+
+  for (let i = 1; i < activityData.length; i++) {
+    let activityDate = new Date(activityData[i][5]);
+    activityDate.setHours(0, 0, 0, 0);
+
+
+    if (activityDate.getTime() === today.getTime()) {
+      activeToday.add(activityData[i][1]);
+    }
+  }
+
+  let inactiveMembers = [];
+
+
+  for (let i = 1; i < membersData.length; i++) {
+
+    const memberId = membersData[i][0];
+    const memberName = membersData[i][1];
+
+    if (!activeToday.has(memberId.toString().trim())) {
+      inactiveMembers.push(memberName);
+    }
+  }
+
+  if (inactiveMembers.length > 0) {
+    const formattedList = inactiveMembers.map(name => "• " + name).join("\n");
+
+    MailApp.sendEmail({
+      to: ADMIN_EMAIL,
+      subject: "Inactive Members Report - " + new Date().toDateString(),
+      body:
+        "Hello Admin,\n\n" +
+        "The following members have not logged activity today:\n\n" +
+        formattedList +
+        "\n\nTotal Inactive Members: " + inactiveMembers.length +
+        "\n\nRegards,\nActivity Monitoring System"
+    });
+  }
+}
+
+function sendPendingActivitiesReport() {
+
+  const ADMIN_EMAIL = "syam.sg@innovaturelabs.com";
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const membersSheet = ss.getSheetByName("Members");
+  const activitySheet = ss.getSheetByName("Activities");
+
+  const membersData = membersSheet.getDataRange().getValues();
+  const activityData = activitySheet.getDataRange().getValues();
+
+  const todayString = Utilities.formatDate(
+    new Date(),
+    Session.getScriptTimeZone(),
+    "yyyy-MM-dd"
+  );
+
+  const memberMap = new Map();
+  for (let i = 1; i < membersData.length; i++) {
+    const id = membersData[i][0];
+    const name = membersData[i][1];
+    memberMap.set(id.toString().trim(), name);
+  }
+
+  let pendingList = [];
+
+  for (let i = 1; i < activityData.length; i++) {
+
+    const activityName = activityData[i][3];
+    const memberId = activityData[i][1];
+    const activityDate = activityData[i][5];
+    const status = activityData[i][7];
+    const description = activityData[i][4];
+
+    if (!activityDate || !memberId || !status) continue;
+
+    const activityDateString = Utilities.formatDate(
+      new Date(activityDate),
+      Session.getScriptTimeZone(),
+      "yyyy-MM-dd"
+    );
+
+    if (
+      activityDateString === todayString &&
+      status.toString().trim().toLowerCase() === "pending"
+    ) {
+
+      const memberName = memberMap.get(memberId.toString().trim()) || "Unknown";
+
+      pendingList.push({
+        memberName,
+        activityName,
+        description,
+        status
+      });
+    }
+  }
+
+  if (pendingList.length > 0) {
+
+    let message = "Hello Admin,\n\n";
+    message += "Pending Activities Report (" + todayString + ")\n\n";
+
+    pendingList.forEach(item => {
+      message +=
+        "Member: " + item.memberName + "\n" +
+        "Activity: " + item.activityName + "\n" +
+        "Description: " + item.description + "\n" +
+        "Status: " + item.status + "\n\n";
+    });
+
+    message += "Total Pending Activities: " + pendingList.length;
+
+    MailApp.sendEmail({
+      to: ADMIN_EMAIL,
+      subject: "Pending Activities Report - " + todayString,
+      body: message
+    });
+  }
+}
